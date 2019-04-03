@@ -5,6 +5,14 @@
  */
 package src;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author fsancheztemprano
@@ -38,17 +46,29 @@ public class Vent extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         cursoF = new javax.swing.JComboBox<>();
         jPanel6 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        limpiarBtn = new javax.swing.JButton();
+        quitarBtn = new javax.swing.JButton();
+        agregarBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tableModel = new DefaultTableModel(new String [][] {
+        },
+        new String [] {
+            "Nombre", "Apellido", "Curso"
+        }){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        };
+        tabla = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(400, 400));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -79,7 +99,7 @@ public class Vent extends javax.swing.JFrame {
 
         jLabel4.setText("Curso");
 
-        cursoF.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cursoF.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "DAM 1", "ASIR 1", "AYF 1" }));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -116,11 +136,26 @@ public class Vent extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton2.setText("Limpiar");
+        limpiarBtn.setText("Limpiar");
+        limpiarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limpiarBtnActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Quitar");
+        quitarBtn.setText("Quitar");
+        quitarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quitarBtnActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("Agregar");
+        agregarBtn.setText("Agregar");
+        agregarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -128,11 +163,11 @@ public class Vent extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                .addComponent(limpiarBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                .addComponent(quitarBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                .addComponent(agregarBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -140,26 +175,16 @@ public class Vent extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(limpiarBtn)
+                    .addComponent(quitarBtn)
+                    .addComponent(agregarBtn))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        tabla.setModel(tableModel);
+        jScrollPane1.setViewportView(tabla);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -174,7 +199,7 @@ public class Vent extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -186,6 +211,11 @@ public class Vent extends javax.swing.JFrame {
         });
 
         jButton5.setText("Exportar");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -258,7 +288,58 @@ public class Vent extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void agregarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarBtnActionPerformed
+        // TODO add your handling code here:
+        if("".equals(nombreF.getText()) || "".equals(apellidoF.getText()) || cursoF.getSelectedIndex() == 0){
+            JOptionPane.showMessageDialog(rootPane, "Alumno no valido.");
+        }else{
+            String[] nuevo = new String[3];
+            nuevo[0] = nombreF.getText();
+            nuevo[1] = apellidoF.getText();
+            nuevo[2] = cursoF.getItemAt(cursoF.getSelectedIndex());
+
+            nombreF.setText("");
+            apellidoF.setText("");
+            cursoF.setSelectedIndex(0);//set cb opcion 0
+            tableModel.addRow(nuevo);
+        }
+    }//GEN-LAST:event_agregarBtnActionPerformed
+
+    private void limpiarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limpiarBtnActionPerformed
+        // TODO add your handling code here:        
+        nombreF.setText("");
+        apellidoF.setText("");
+        cursoF.setSelectedIndex(0);//set cb opcion 0
+        tableModel.setRowCount(0);
+    }//GEN-LAST:event_limpiarBtnActionPerformed
+
+    private void quitarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitarBtnActionPerformed
+        // TODO add your handling code here:
+        int[] rows = tabla.getSelectedRows();
+        for (int i = 0; i < rows.length; i++) {
+            tableModel.removeRow(tabla.getSelectedRows()[0]);            
+        }
+    }//GEN-LAST:event_quitarBtnActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        File f = new File("PROG_Boletin_26/src/log.txt");
+        try (PrintWriter pw = new PrintWriter(f)){
+            for (int row = 0; row < tableModel.getRowCount(); row++) {
+                for (int col = 0; col < tableModel.getColumnCount(); col++) {
+                    pw.print(tableModel.getValueAt(row, col) + ",");
+                }
+                pw.println();
+            }
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(rootPane, "Error exportando tabla.");
+            Logger.getLogger(Vent.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+        JOptionPane.showMessageDialog(rootPane, "Tabla exportada a log.txt");     
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -294,14 +375,15 @@ public class Vent extends javax.swing.JFrame {
             }
         });
     }
+    
 
+
+    private DefaultTableModel tableModel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton agregarBtn;
     private javax.swing.JTextField apellidoF;
     private javax.swing.JComboBox<String> cursoF;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -314,7 +396,9 @@ public class Vent extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JButton limpiarBtn;
     private javax.swing.JTextField nombreF;
+    private javax.swing.JButton quitarBtn;
+    private javax.swing.JTable tabla;
     // End of variables declaration//GEN-END:variables
 }
